@@ -175,14 +175,17 @@ impl Storage {
         let mut stmt = conn
             .prepare("SELECT payload FROM rules ORDER BY priority DESC, name ASC")
             .map_err(|err| err.to_string())?;
-        stmt.query_map([], |row| {
-            let payload: String = row.get(0)?;
-            serde_json::from_str::<ExtractionRule>(&payload)
-                .map_err(|err| rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(err)))
-        })
-        .map_err(|err| err.to_string())?
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(|err| err.to_string())
+        let rules = stmt
+            .query_map([], |row| {
+                let payload: String = row.get(0)?;
+                serde_json::from_str::<ExtractionRule>(&payload)
+                    .map_err(|err| rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(err)))
+            })
+            .map_err(|err| err.to_string())?
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|err| err.to_string())?;
+
+        Ok(rules)
     }
 
     pub fn save_rule(&self, mut rule: ExtractionRule) -> Result<ExtractionRule, String> {

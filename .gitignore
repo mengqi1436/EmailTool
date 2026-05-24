@@ -1,0 +1,29 @@
+.DS_Store
+Thumbs.db
+
+# Local planning/preview artifacts
+.superpowers/
+.arts/
+.codeartsdoer/
+
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Tauri/Rust
+src-tauri/target/
+src-tauri/gen/
+Cargo.lock
+
+# Local app data
+*.db
+*.sqlite
+*.sqlite3
+*.hold
+*.log
+
+# IDE
+.idea/
+.vscode/
